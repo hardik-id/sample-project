@@ -1,0 +1,61 @@
+[
+  {
+    "text": "Menu Heading",
+    "heading": "true",
+    "translate": "sidebar.heading.HEADER"
+  },
+  {
+    "text": "Home",
+    "sref": "app.home",
+    "icon": "fa fa-home"
+  },
+  {
+    "text": "Sign Up",
+    "sref": "app.signup",
+    "icon": "fa fa-registered"
+  },
+  {
+    "text": "Log In",
+    "sref": "app.login",
+    "icon": "fa fa-sign-in"
+  },
+  {
+    "text": "Log Out",
+    "sref": "app.logout",
+    "icon": "fa fa-sign-out"
+  },
+  {
+    "text": "My Account",
+    "sref": "app.account",
+    "icon": "fa fa-user"
+  },
+  {
+    "text":"Browse Products",
+    "sref" : "app.products",
+    "icon" : "fa fa-shopping-cart"
+  },
+  {
+    "text":"Hot Products",
+    "sref" : "app.hotproducts",
+    "icon" : "fa fa-fire"
+  },
+  {
+    "text":"Your Watch",
+    "sref" : "app.watches",
+    "icon" : "fa fa-eye"
+  },
+  {
+    "text": "Quick Links",
+    "sref": "#",
+    "icon": "fa fa-angle-right",
+    "submenu": [
+      { "text": "About Us",
+        "sref": "app.aboutus"
+      },{ "text": "Privacy Policy",
+        "sref": "app.privacy"
+      },{ "text": "Contact us",
+        "sref": "app.contactus"
+      }
+    ]
+  }
+]
