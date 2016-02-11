@@ -31,16 +31,7 @@
               templateUrl: helper.basepath('app.html'),
               resolve: helper.resolveFor('modernizr', 'icons')
           })
-          .state('app.signup', {
-              url: '/signup',
-              title: 'Sign Up',
-              templateUrl: helper.basepath('signup.html')
-          })
-          .state('app.login', {
-              url: '/login',
-              title: 'Log In',
-              templateUrl: helper.basepath('login.html')
-          })
+
             .state('app.logout', {
                 url: '/logout',
                 title: 'Log Out',
@@ -80,6 +71,35 @@
                 url: '/contactus',
                 title: 'Contact Us',
                 templateUrl: helper.basepath('contactus.html')
+            })
+
+            //
+            // Single Page Routes
+            // -----------------------------------
+            .state('app.login', {
+                url: '/login',
+                title: 'Login',
+                templateUrl: 'app/pages/login.html'
+            })
+            .state('app.register', {
+                url: '/register',
+                title: 'Register',
+                templateUrl: 'app/pages/register.html'
+            })
+            .state('page.recover', {
+                url: '/recover',
+                title: 'Recover',
+                templateUrl: 'app/pages/recover.html'
+            })
+            .state('page.lock', {
+                url: '/lock',
+                title: 'Lock',
+                templateUrl: 'app/pages/lock.html'
+            })
+            .state('page.404', {
+                url: '/404',
+                title: 'Not Found',
+                templateUrl: 'app/pages/404.html'
             })
 
           // 

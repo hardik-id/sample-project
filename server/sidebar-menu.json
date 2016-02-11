@@ -11,7 +11,7 @@
   },
   {
     "text": "Sign Up",
-    "sref": "app.signup",
+    "sref": "app.register",
     "icon": "fa fa-registered"
   },
   {

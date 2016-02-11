@@ -25,11 +25,24 @@
             'app.loadingbar',
             'app.translate',
             'app.settings',
-            'app.utils'
+            'app.utils',
+            'app.pages'
         ]);
 })();
 
 
+(function() {
+    'use strict';
+
+    angular
+        .module('app.lazyload', []);
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.colors', []);
+})();
 (function() {
     'use strict';
 
@@ -53,19 +66,27 @@
     'use strict';
 
     angular
-        .module('app.colors', []);
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.lazyload', []);
+        .module('app.loadingbar', []);
 })();
 (function() {
     'use strict';
 
     angular
         .module('app.navsearch', []);
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.preloader', []);
+})();
+
+
+(function() {
+    'use strict';
+
+    angular
+        .module('app.pages', []);
 })();
 (function() {
     'use strict';
@@ -79,7 +100,7 @@
     'use strict';
 
     angular
-        .module('app.loadingbar', []);
+        .module('app.translate', []);
 })();
 (function() {
     'use strict';
@@ -106,16 +127,92 @@
     'use strict';
 
     angular
-        .module('app.preloader', []);
-})();
+        .module('app.lazyload')
+        .config(lazyloadConfig);
 
+    lazyloadConfig.$inject = ['$ocLazyLoadProvider', 'APP_REQUIRES'];
+    function lazyloadConfig($ocLazyLoadProvider, APP_REQUIRES){
+
+      // Lazy Load modules configuration
+      $ocLazyLoadProvider.config({
+        debug: false,
+        events: true,
+        modules: APP_REQUIRES.modules
+      });
+
+    }
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.lazyload')
+        .constant('APP_REQUIRES', {
+          // jQuery based and standalone scripts
+          scripts: {
+            'modernizr':          ['vendor/modernizr/modernizr.custom.js'],
+            'icons':              ['vendor/fontawesome/css/font-awesome.min.css',
+                                   'vendor/simple-line-icons/css/simple-line-icons.css']
+          },
+          // Angular based script (use the right module name)
+          modules: [
+            // {name: 'toaster', files: ['vendor/angularjs-toaster/toaster.js', 'vendor/angularjs-toaster/toaster.css']}
+          ]
+        })
+        ;
+
+})();
 
 (function() {
     'use strict';
 
     angular
-        .module('app.translate', []);
+        .module('app.colors')
+        .constant('APP_COLORS', {
+          'primary':                '#5d9cec',
+          'success':                '#27c24c',
+          'info':                   '#23b7e5',
+          'warning':                '#ff902b',
+          'danger':                 '#f05050',
+          'inverse':                '#131e26',
+          'green':                  '#37bc9b',
+          'pink':                   '#f532e5',
+          'purple':                 '#7266ba',
+          'dark':                   '#3a3f51',
+          'yellow':                 '#fad732',
+          'gray-darker':            '#232735',
+          'gray-dark':              '#3a3f51',
+          'gray':                   '#dde6e9',
+          'gray-light':             '#e4eaec',
+          'gray-lighter':           '#edf1f2'
+        })
+        ;
 })();
+/**=========================================================
+ * Module: colors.js
+ * Services to retrieve global colors
+ =========================================================*/
+
+(function() {
+    'use strict';
+
+    angular
+        .module('app.colors')
+        .service('Colors', Colors);
+
+    Colors.$inject = ['APP_COLORS'];
+    function Colors(APP_COLORS) {
+        this.byName = byName;
+
+        ////////////////
+
+        function byName(name) {
+          return (APP_COLORS[name] || '#fff');
+        }
+    }
+
+})();
+
 (function() {
     'use strict';
 
@@ -178,11 +275,11 @@
       $rootScope.$storage = $window.localStorage;
 
       // Uncomment this to disable template cache
-      /*$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
+      $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
           if (typeof(toState) !== 'undefined'){
             $templateCache.remove(toState.templateUrl);
           }
-      });*/
+      });
 
       // Allows to use branding color with interpolation
       // {{ colorByName('primary') }}
@@ -234,92 +331,46 @@
     'use strict';
 
     angular
-        .module('app.colors')
-        .constant('APP_COLORS', {
-          'primary':                '#5d9cec',
-          'success':                '#27c24c',
-          'info':                   '#23b7e5',
-          'warning':                '#ff902b',
-          'danger':                 '#f05050',
-          'inverse':                '#131e26',
-          'green':                  '#37bc9b',
-          'pink':                   '#f532e5',
-          'purple':                 '#7266ba',
-          'dark':                   '#3a3f51',
-          'yellow':                 '#fad732',
-          'gray-darker':            '#232735',
-          'gray-dark':              '#3a3f51',
-          'gray':                   '#dde6e9',
-          'gray-light':             '#e4eaec',
-          'gray-lighter':           '#edf1f2'
-        })
+        .module('app.loadingbar')
+        .config(loadingbarConfig)
         ;
-})();
-/**=========================================================
- * Module: colors.js
- * Services to retrieve global colors
- =========================================================*/
-
-(function() {
-    'use strict';
-
-    angular
-        .module('app.colors')
-        .service('Colors', Colors);
-
-    Colors.$inject = ['APP_COLORS'];
-    function Colors(APP_COLORS) {
-        this.byName = byName;
-
-        ////////////////
-
-        function byName(name) {
-          return (APP_COLORS[name] || '#fff');
-        }
+    loadingbarConfig.$inject = ['cfpLoadingBarProvider'];
+    function loadingbarConfig(cfpLoadingBarProvider){
+      cfpLoadingBarProvider.includeBar = true;
+      cfpLoadingBarProvider.includeSpinner = false;
+      cfpLoadingBarProvider.latencyThreshold = 500;
+      cfpLoadingBarProvider.parentSelector = '.wrapper > section';
     }
-
 })();
-
 (function() {
     'use strict';
 
     angular
-        .module('app.lazyload')
-        .config(lazyloadConfig);
+        .module('app.loadingbar')
+        .run(loadingbarRun)
+        ;
+    loadingbarRun.$inject = ['$rootScope', '$timeout', 'cfpLoadingBar'];
+    function loadingbarRun($rootScope, $timeout, cfpLoadingBar){
 
-    lazyloadConfig.$inject = ['$ocLazyLoadProvider', 'APP_REQUIRES'];
-    function lazyloadConfig($ocLazyLoadProvider, APP_REQUIRES){
-
-      // Lazy Load modules configuration
-      $ocLazyLoadProvider.config({
-        debug: false,
-        events: true,
-        modules: APP_REQUIRES.modules
+      // Loading bar transition
+      // ----------------------------------- 
+      var thBar;
+      $rootScope.$on('$stateChangeStart', function() {
+          if($('.wrapper > section').length) // check if bar container exists
+            thBar = $timeout(function() {
+              cfpLoadingBar.start();
+            }, 0); // sets a latency Threshold
+      });
+      $rootScope.$on('$stateChangeSuccess', function(event) {
+          event.targetScope.$watch('$viewContentLoaded', function () {
+            $timeout.cancel(thBar);
+            cfpLoadingBar.complete();
+          });
       });
 
     }
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.lazyload')
-        .constant('APP_REQUIRES', {
-          // jQuery based and standalone scripts
-          scripts: {
-            'modernizr':          ['vendor/modernizr/modernizr.custom.js'],
-            'icons':              ['vendor/fontawesome/css/font-awesome.min.css',
-                                   'vendor/simple-line-icons/css/simple-line-icons.css']
-          },
-          // Angular based script (use the right module name)
-          modules: [
-            // {name: 'toaster', files: ['vendor/angularjs-toaster/toaster.js', 'vendor/angularjs-toaster/toaster.css']}
-          ]
-        })
-        ;
 
 })();
-
 /**=========================================================
  * Module: navbar-search.js
  * Navbar search toggler * Auto dismiss on ESC key
@@ -426,6 +477,213 @@
             .val('') // Empty input
             ;
         }        
+    }
+})();
+
+(function() {
+    'use strict';
+
+    angular
+        .module('app.preloader')
+        .directive('preloader', preloader);
+
+    preloader.$inject = ['$animate', '$timeout', '$q'];
+    function preloader ($animate, $timeout, $q) {
+
+        var directive = {
+            restrict: 'EAC',
+            template: 
+              '<div class="preloader-progress">' +
+                  '<div class="preloader-progress-bar" ' +
+                       'ng-style="{width: loadCounter + \'%\'}"></div>' +
+              '</div>'
+            ,
+            link: link
+        };
+        return directive;
+
+        ///////
+
+        function link(scope, el) {
+
+          scope.loadCounter = 0;
+
+          var counter  = 0,
+              timeout;
+
+          // disables scrollbar
+          angular.element('body').css('overflow', 'hidden');
+          // ensure class is present for styling
+          el.addClass('preloader');
+
+          appReady().then(endCounter);
+
+          timeout = $timeout(startCounter);
+
+          ///////
+
+          function startCounter() {
+
+            var remaining = 100 - counter;
+            counter = counter + (0.015 * Math.pow(1 - Math.sqrt(remaining), 2));
+
+            scope.loadCounter = parseInt(counter, 10);
+
+            timeout = $timeout(startCounter, 20);
+          }
+
+          function endCounter() {
+
+            $timeout.cancel(timeout);
+
+            scope.loadCounter = 100;
+
+            $timeout(function(){
+              // animate preloader hiding
+              $animate.addClass(el, 'preloader-hidden');
+              // retore scrollbar
+              angular.element('body').css('overflow', '');
+            }, 300);
+          }
+
+          function appReady() {
+            var deferred = $q.defer();
+            var viewsLoaded = 0;
+            // if this doesn't sync with the real app ready
+            // a custom event must be used instead
+            var off = scope.$on('$viewContentLoaded', function () {
+              viewsLoaded ++;
+              // we know there are at least two views to be loaded 
+              // before the app is ready (1-index.html 2-app*.html)
+              if ( viewsLoaded === 2) {
+                // with resolve this fires only once
+                $timeout(function(){
+                  deferred.resolve();
+                }, 3000);
+
+                off();
+              }
+
+            });
+
+            return deferred.promise;
+          }
+
+        } //link
+    }
+
+})();
+/**=========================================================
+ * Module: access-login.js
+ * Demo for login api
+ =========================================================*/
+
+(function() {
+    'use strict';
+
+    angular
+        .module('app.pages')
+        .controller('LoginFormController', LoginFormController);
+
+    LoginFormController.$inject = ['$http', '$state'];
+    function LoginFormController($http, $state) {
+        var vm = this;
+
+        activate();
+
+        ////////////////
+
+        function activate() {
+          // bind here all data from the form
+          vm.account = {};
+          // place the message if something goes wrong
+          vm.authMsg = '';
+
+          vm.login = function() {
+            vm.authMsg = '';
+
+            if(vm.loginForm.$valid) {
+
+              $http
+                .post('api/account/login', {email: vm.account.email, password: vm.account.password})
+                .then(function(response) {
+                  // assumes if ok, response is an object with some data, if not, a string with error
+                  // customize according to your api
+                  if ( !response.account ) {
+                    vm.authMsg = 'Incorrect credentials.';
+                  }else{
+                    $state.go('app.dashboard');
+                  }
+                }, function() {
+                  vm.authMsg = 'Server Request Error';
+                });
+            }
+            else {
+              // set as dirty if the user click directly to login so we show the validation messages
+              /*jshint -W106*/
+              vm.loginForm.account_email.$dirty = true;
+              vm.loginForm.account_password.$dirty = true;
+            }
+          };
+        }
+    }
+})();
+
+/**=========================================================
+ * Module: access-register.js
+ * Demo for register account api
+ =========================================================*/
+
+(function() {
+    'use strict';
+
+    angular
+        .module('app.pages')
+        .controller('RegisterFormController', RegisterFormController);
+
+    RegisterFormController.$inject = ['$http', '$state'];
+    function RegisterFormController($http, $state) {
+        var vm = this;
+
+        activate();
+
+        ////////////////
+
+        function activate() {
+          // bind here all data from the form
+          vm.account = {};
+          // place the message if something goes wrong
+          vm.authMsg = '';
+            
+          vm.register = function() {
+            vm.authMsg = '';
+
+            if(vm.registerForm.$valid) {
+
+              $http
+                .post('api/account/register', {email: vm.account.email, password: vm.account.password})
+                .then(function(response) {
+                  // assumes if ok, response is an object with some data, if not, a string with error
+                  // customize according to your api
+                  if ( !response.account ) {
+                    vm.authMsg = response;
+                  }else{
+                    $state.go('app.dashboard');
+                  }
+                }, function() {
+                  vm.authMsg = 'Server Request Error';
+                });
+            }
+            else {
+              // set as dirty if the user click directly to login so we show the validation messages
+              /*jshint -W106*/
+              vm.registerForm.account_email.$dirty = true;
+              vm.registerForm.account_password.$dirty = true;
+              vm.registerForm.account_agreed.$dirty = true;
+              
+            }
+          };
+        }
     }
 })();
 
@@ -546,16 +804,7 @@
               templateUrl: helper.basepath('app.html'),
               resolve: helper.resolveFor('modernizr', 'icons')
           })
-          .state('app.signup', {
-              url: '/signup',
-              title: 'Sign Up',
-              templateUrl: helper.basepath('signup.html')
-          })
-          .state('app.login', {
-              url: '/login',
-              title: 'Log In',
-              templateUrl: helper.basepath('login.html')
-          })
+
             .state('app.logout', {
                 url: '/logout',
                 title: 'Log Out',
@@ -597,6 +846,35 @@
                 templateUrl: helper.basepath('contactus.html')
             })
 
+            //
+            // Single Page Routes
+            // -----------------------------------
+            .state('app.login', {
+                url: '/login',
+                title: 'Login',
+                templateUrl: 'app/pages/login.html'
+            })
+            .state('app.register', {
+                url: '/register',
+                title: 'Register',
+                templateUrl: 'app/pages/register.html'
+            })
+            .state('page.recover', {
+                url: '/recover',
+                title: 'Recover',
+                templateUrl: 'app/pages/recover.html'
+            })
+            .state('page.lock', {
+                url: '/lock',
+                title: 'Lock',
+                templateUrl: 'app/pages/lock.html'
+            })
+            .state('page.404', {
+                url: '/404',
+                title: 'Not Found',
+                templateUrl: 'app/pages/404.html'
+            })
+
           // 
           // CUSTOM RESOLVES
           //   Add your own resolves properties
@@ -624,45 +902,65 @@
     'use strict';
 
     angular
-        .module('app.loadingbar')
-        .config(loadingbarConfig)
+        .module('app.translate')
+        .config(translateConfig)
         ;
-    loadingbarConfig.$inject = ['cfpLoadingBarProvider'];
-    function loadingbarConfig(cfpLoadingBarProvider){
-      cfpLoadingBarProvider.includeBar = true;
-      cfpLoadingBarProvider.includeSpinner = false;
-      cfpLoadingBarProvider.latencyThreshold = 500;
-      cfpLoadingBarProvider.parentSelector = '.wrapper > section';
+    translateConfig.$inject = ['$translateProvider'];
+    function translateConfig($translateProvider){
+
+      $translateProvider.useStaticFilesLoader({
+          prefix : 'app/i18n/',
+          suffix : '.json'
+      });
+
+      $translateProvider.preferredLanguage('en');
+      $translateProvider.useLocalStorage();
+      $translateProvider.usePostCompiling(true);
+      $translateProvider.useSanitizeValueStrategy('sanitizeParameters');
+
     }
 })();
 (function() {
     'use strict';
 
     angular
-        .module('app.loadingbar')
-        .run(loadingbarRun)
+        .module('app.translate')
+        .run(translateRun)
         ;
-    loadingbarRun.$inject = ['$rootScope', '$timeout', 'cfpLoadingBar'];
-    function loadingbarRun($rootScope, $timeout, cfpLoadingBar){
+    translateRun.$inject = ['$rootScope', '$translate'];
+    
+    function translateRun($rootScope, $translate){
 
-      // Loading bar transition
-      // ----------------------------------- 
-      var thBar;
-      $rootScope.$on('$stateChangeStart', function() {
-          if($('.wrapper > section').length) // check if bar container exists
-            thBar = $timeout(function() {
-              cfpLoadingBar.start();
-            }, 0); // sets a latency Threshold
-      });
-      $rootScope.$on('$stateChangeSuccess', function(event) {
-          event.targetScope.$watch('$viewContentLoaded', function () {
-            $timeout.cancel(thBar);
-            cfpLoadingBar.complete();
-          });
-      });
+      // Internationalization
+      // ----------------------
+
+      $rootScope.language = {
+        // Handles language dropdown
+        listIsOpen: false,
+        // list of available languages
+        available: {
+          'en':       'English',
+          'es_AR':    'Español'
+        },
+        // display always the current ui language
+        init: function () {
+          var proposedLanguage = $translate.proposedLanguage() || $translate.use();
+          var preferredLanguage = $translate.preferredLanguage(); // we know we have set a preferred one in app.config
+          $rootScope.language.selected = $rootScope.language.available[ (proposedLanguage || preferredLanguage) ];
+        },
+        set: function (localeId) {
+          // Set the new idiom
+          $translate.use(localeId);
+          // save a reference for the current language
+          $rootScope.language.selected = $rootScope.language.available[localeId];
+          // finally toggle dropdown
+          $rootScope.language.listIsOpen = ! $rootScope.language.listIsOpen;
+        }
+      };
+
+      $rootScope.language.init();
 
     }
-
 })();
 /**=========================================================
  * Module: sidebar-menu.js
@@ -1507,163 +1805,6 @@
     }
 })();
 
-(function() {
-    'use strict';
-
-    angular
-        .module('app.preloader')
-        .directive('preloader', preloader);
-
-    preloader.$inject = ['$animate', '$timeout', '$q'];
-    function preloader ($animate, $timeout, $q) {
-
-        var directive = {
-            restrict: 'EAC',
-            template: 
-              '<div class="preloader-progress">' +
-                  '<div class="preloader-progress-bar" ' +
-                       'ng-style="{width: loadCounter + \'%\'}"></div>' +
-              '</div>'
-            ,
-            link: link
-        };
-        return directive;
-
-        ///////
-
-        function link(scope, el) {
-
-          scope.loadCounter = 0;
-
-          var counter  = 0,
-              timeout;
-
-          // disables scrollbar
-          angular.element('body').css('overflow', 'hidden');
-          // ensure class is present for styling
-          el.addClass('preloader');
-
-          appReady().then(endCounter);
-
-          timeout = $timeout(startCounter);
-
-          ///////
-
-          function startCounter() {
-
-            var remaining = 100 - counter;
-            counter = counter + (0.015 * Math.pow(1 - Math.sqrt(remaining), 2));
-
-            scope.loadCounter = parseInt(counter, 10);
-
-            timeout = $timeout(startCounter, 20);
-          }
-
-          function endCounter() {
-
-            $timeout.cancel(timeout);
-
-            scope.loadCounter = 100;
-
-            $timeout(function(){
-              // animate preloader hiding
-              $animate.addClass(el, 'preloader-hidden');
-              // retore scrollbar
-              angular.element('body').css('overflow', '');
-            }, 300);
-          }
-
-          function appReady() {
-            var deferred = $q.defer();
-            var viewsLoaded = 0;
-            // if this doesn't sync with the real app ready
-            // a custom event must be used instead
-            var off = scope.$on('$viewContentLoaded', function () {
-              viewsLoaded ++;
-              // we know there are at least two views to be loaded 
-              // before the app is ready (1-index.html 2-app*.html)
-              if ( viewsLoaded === 2) {
-                // with resolve this fires only once
-                $timeout(function(){
-                  deferred.resolve();
-                }, 3000);
-
-                off();
-              }
-
-            });
-
-            return deferred.promise;
-          }
-
-        } //link
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.translate')
-        .config(translateConfig)
-        ;
-    translateConfig.$inject = ['$translateProvider'];
-    function translateConfig($translateProvider){
-
-      $translateProvider.useStaticFilesLoader({
-          prefix : 'app/i18n/',
-          suffix : '.json'
-      });
-
-      $translateProvider.preferredLanguage('en');
-      $translateProvider.useLocalStorage();
-      $translateProvider.usePostCompiling(true);
-      $translateProvider.useSanitizeValueStrategy('sanitizeParameters');
-
-    }
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.translate')
-        .run(translateRun)
-        ;
-    translateRun.$inject = ['$rootScope', '$translate'];
-    
-    function translateRun($rootScope, $translate){
-
-      // Internationalization
-      // ----------------------
-
-      $rootScope.language = {
-        // Handles language dropdown
-        listIsOpen: false,
-        // list of available languages
-        available: {
-          'en':       'English',
-          'es_AR':    'Español'
-        },
-        // display always the current ui language
-        init: function () {
-          var proposedLanguage = $translate.proposedLanguage() || $translate.use();
-          var preferredLanguage = $translate.preferredLanguage(); // we know we have set a preferred one in app.config
-          $rootScope.language.selected = $rootScope.language.available[ (proposedLanguage || preferredLanguage) ];
-        },
-        set: function (localeId) {
-          // Set the new idiom
-          $translate.use(localeId);
-          // save a reference for the current language
-          $rootScope.language.selected = $rootScope.language.available[localeId];
-          // finally toggle dropdown
-          $rootScope.language.listIsOpen = ! $rootScope.language.listIsOpen;
-        }
-      };
-
-      $rootScope.language.init();
-
-    }
-})();
 (function() {
     'use strict';
 
