@@ -17,7 +17,7 @@
         };
         return directive;
 
-        function link(scope, element) {
+        function link(scope, element, attributes) {
           element.on('click', function(){
             $timeout(function(){
               // all IE friendly dispatchEvent
@@ -26,7 +26,7 @@
               $window.dispatchEvent(evt);
               // modern dispatchEvent way
               // $window.dispatchEvent(new Event('resize'));
-            });
+            }, attributes.triggerResize || 300);
           });
         }
     }

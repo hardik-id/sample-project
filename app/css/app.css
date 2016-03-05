@@ -4,7 +4,7 @@
  * 
  * Angle - Bootstrap Admin App + AngularJS
  * 
- * Version: 3.2.0
+ * Version: 3.3
  * Author: @themicon_co
  * Website: http://themicon.co
  * License: https://wrapbootstrap.com/help/licenses
@@ -1187,6 +1187,7 @@ _:-ms-lang(x),
   color: #515253;
   letter-spacing: .025em;
   font-weight: normal;
+  cursor: pointer;
 }
 .sidebar > .nav > li > a:focus,
 .sidebar > .nav > li > .nav-item:focus,
@@ -1210,11 +1211,15 @@ _:-ms-lang(x),
 .sidebar > .nav > li.open,
 .sidebar > .nav > li.active > a,
 .sidebar > .nav > li.open > a,
+.sidebar > .nav > li.active > .nav-item,
+.sidebar > .nav > li.open > .nav-item,
 .sidebar > .nav > li.active .nav,
 .sidebar > .nav > li.open .nav {
   background-color: #fcfcfc;
   color: #23b7e5;
 }
+.sidebar > .nav > li.active > .nav-item > em,
+.sidebar > .nav > li.open > .nav-item > em,
 .sidebar > .nav > li.active > a > em,
 .sidebar > .nav > li.open > a > em {
   color: #23b7e5;
@@ -1290,10 +1295,12 @@ _:-ms-lang(x),
 .sidebar-subnav.nav-floating > .sidebar-subnav-header {
   display: block;
 }
-.sidebar-subnav.nav-floating li > a {
+.sidebar-subnav.nav-floating li > a,
+.sidebar-subnav.nav-floating li > .nav-item {
   padding-left: 20px;
 }
-.sidebar-subnav.nav-floating li > a em {
+.sidebar-subnav.nav-floating li > a em,
+.sidebar-subnav.nav-floating li > .nav-item em {
   margin-left: 0;
 }
 @media only screen and (min-width: 768px) {
@@ -1306,6 +1313,7 @@ _:-ms-lang(x),
 }
 .aside-collapsed .sidebar > .nav .nav,
 .aside-collapsed .sidebar > .nav > .nav-heading,
+.aside-collapsed .sidebar > .nav > li > .nav-item > span,
 .aside-collapsed .sidebar > .nav > li > a > span {
   display: none !important;
 }

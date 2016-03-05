@@ -70,6 +70,7 @@ $scrollbar-wd:                    17px;
         color: $sidebar-item-color;
         letter-spacing: .025em;
         font-weight: normal;
+        cursor: pointer;
 
         &:focus, &:hover {
           text-decoration: none;
@@ -93,10 +94,12 @@ $scrollbar-wd:                    17px;
       &.open {
         &,
         > a,
+        > .nav-item,
         .nav {
           background-color: $sidebar-item-bg-active;
           color: $sidebar-item-color-active;
         }
+        > .nav-item > em,
         > a > em {
           color: $sidebar-icon-color-active;
         }  
@@ -187,7 +190,8 @@ $tablet-landscape: 1025px;
       display: block;
     }
     // reduce padding when item is on sidebar collapsed
-    li > a {
+    li > a,
+    li > .nav-item {
       padding-left: 20px;
       // submenu icons
       em {
@@ -221,6 +225,7 @@ $tablet-landscape: 1025px;
       
       .nav, 
       > .nav-heading,
+      > li > .nav-item > span,
       > li > a > span {
         display: none !important;
       }

@@ -2,7 +2,7 @@
  * 
  * Angle - Bootstrap Admin App + AngularJS
  * 
- * Version: 3.2.0
+ * Version: 3.3
  * Author: @themicon_co
  * Website: http://themicon.co
  * License: https://wrapbootstrap.com/help/licenses
