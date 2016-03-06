@@ -20,6 +20,7 @@
             'app.core',
             'app.routes',
             'app.sidebar',
+            'app.products',
             'app.navsearch',
             'app.preloader',
             'app.loadingbar',

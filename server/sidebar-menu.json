@@ -5,6 +5,12 @@
     "translate": "sidebar.heading.HEADER"
   },
   {
+    "text": "Product List",
+    "sref": "app.products",
+    "icon": "fa fa-shopping-basket",
+    "translate": "sidebar.nav.PRODUCTS"
+  },
+  {
     "text": "Single View",
     "sref": "app.singleview",
     "icon": "fa fa-file-o",

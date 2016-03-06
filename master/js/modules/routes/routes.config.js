@@ -31,6 +31,13 @@
               templateUrl: helper.basepath('app.html'),
               resolve: helper.resolveFor('modernizr', 'icons')
           })
+            .state('app.products', {
+                url: '/products',
+                title: 'Product List',
+                controller: 'ProductsController',
+                controllerAs: 'ProductsCtrl',
+                templateUrl: helper.basepath('products.html')
+            })
           .state('app.singleview', {
               url: '/singleview',
               title: 'Single View',

@@ -90,7 +90,7 @@ var build = {
     templates: {
         index: '../',
         views: paths.app,
-        cache: paths.app + 'js/' + 'templates.js',
+        cache: paths.app + 'js/' + 'templates.js'
     }
 };
 

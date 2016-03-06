@@ -1,0 +1,23 @@
+h3
+  | Product List ({{ProductsCtrl.products.length}}) {{ProductsCtrl.totalItems}}
+
+mixin pagination
+    .row
+        uib-pagination.pagination.pull-right(total-items='ProductsCtrl.totalProducts', ng-model='ProductsCtrl.currentPage', max-size='ProductsCtrl.maxSize', boundary-links='true', rotate='false', num-pages='ProductsCtrl.numPages', ng-change='ProductsCtrl.pageChanged()', items-per-page='ProductsCtrl.productsPerPage')
+
+.row
+    .col-xs-12.text-center
+        +pagination
+        .row
+            .col-sm-6.col-md-3(ng-repeat='p in ProductsCtrl.products',style='min-height:333px')
+                .thumbnail
+                    img(src='{{p.Items.Item.MediumImage.URL}}',alt='test',style='height:160px')
+                    .caption(style='height:170px')
+                        p
+                            strong(uib-popover='{{p.Items.Item.ItemAttributes.Title}}', popover-trigger='mouseenter')
+                                | {{p.Items.Item.ItemAttributes.Title | truncate:50  }}
+                        p
+                            | Brand name and other information.
+                        p
+                            a(href='{{p.Items.Item.DetailPageURL}}',target='_blank',role='button').btn.btn-primary Buy On Amazon
+        +pagination

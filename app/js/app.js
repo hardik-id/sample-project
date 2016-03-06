@@ -20,6 +20,7 @@
             'app.core',
             'app.routes',
             'app.sidebar',
+            'app.products',
             'app.navsearch',
             'app.preloader',
             'app.loadingbar',
@@ -30,6 +31,12 @@
 })();
 
 
+(function() {
+    'use strict';
+
+    angular
+        .module('app.colors', []);
+})();
 (function() {
     'use strict';
 
@@ -59,12 +66,6 @@
     'use strict';
 
     angular
-        .module('app.colors', []);
-})();
-(function() {
-    'use strict';
-
-    angular
         .module('app.loadingbar', []);
 })();
 (function() {
@@ -77,18 +78,24 @@
     'use strict';
 
     angular
-        .module('app.routes', [
-            'app.lazyload'
-        ]);
+        .module('app.preloader', []);
+})();
+
+
+(function() {
+    'use strict';
+
+    angular
+        .module('app.products', []);
 })();
 (function() {
     'use strict';
 
     angular
-        .module('app.preloader', []);
+        .module('app.routes', [
+            'app.lazyload'
+        ]);
 })();
-
-
 (function() {
     'use strict';
 
@@ -114,6 +121,56 @@
         .module('app.utils', [
           'app.colors'
           ]);
+})();
+
+(function() {
+    'use strict';
+
+    angular
+        .module('app.colors')
+        .constant('APP_COLORS', {
+          'primary':                '#5d9cec',
+          'success':                '#27c24c',
+          'info':                   '#23b7e5',
+          'warning':                '#ff902b',
+          'danger':                 '#f05050',
+          'inverse':                '#131e26',
+          'green':                  '#37bc9b',
+          'pink':                   '#f532e5',
+          'purple':                 '#7266ba',
+          'dark':                   '#3a3f51',
+          'yellow':                 '#fad732',
+          'gray-darker':            '#232735',
+          'gray-dark':              '#3a3f51',
+          'gray':                   '#dde6e9',
+          'gray-light':             '#e4eaec',
+          'gray-lighter':           '#edf1f2'
+        })
+        ;
+})();
+/**=========================================================
+ * Module: colors.js
+ * Services to retrieve global colors
+ =========================================================*/
+
+(function() {
+    'use strict';
+
+    angular
+        .module('app.colors')
+        .service('Colors', Colors);
+
+    Colors.$inject = ['APP_COLORS'];
+    function Colors(APP_COLORS) {
+        this.byName = byName;
+
+        ////////////////
+
+        function byName(name) {
+          return (APP_COLORS[name] || '#fff');
+        }
+    }
+
 })();
 
 (function() {
@@ -274,56 +331,6 @@
     'use strict';
 
     angular
-        .module('app.colors')
-        .constant('APP_COLORS', {
-          'primary':                '#5d9cec',
-          'success':                '#27c24c',
-          'info':                   '#23b7e5',
-          'warning':                '#ff902b',
-          'danger':                 '#f05050',
-          'inverse':                '#131e26',
-          'green':                  '#37bc9b',
-          'pink':                   '#f532e5',
-          'purple':                 '#7266ba',
-          'dark':                   '#3a3f51',
-          'yellow':                 '#fad732',
-          'gray-darker':            '#232735',
-          'gray-dark':              '#3a3f51',
-          'gray':                   '#dde6e9',
-          'gray-light':             '#e4eaec',
-          'gray-lighter':           '#edf1f2'
-        })
-        ;
-})();
-/**=========================================================
- * Module: colors.js
- * Services to retrieve global colors
- =========================================================*/
-
-(function() {
-    'use strict';
-
-    angular
-        .module('app.colors')
-        .service('Colors', Colors);
-
-    Colors.$inject = ['APP_COLORS'];
-    function Colors(APP_COLORS) {
-        this.byName = byName;
-
-        ////////////////
-
-        function byName(name) {
-          return (APP_COLORS[name] || '#fff');
-        }
-    }
-
-})();
-
-(function() {
-    'use strict';
-
-    angular
         .module('app.loadingbar')
         .config(loadingbarConfig)
         ;
@@ -473,6 +480,208 @@
     }
 })();
 
+(function() {
+    'use strict';
+
+    angular
+        .module('app.preloader')
+        .directive('preloader', preloader);
+
+    preloader.$inject = ['$animate', '$timeout', '$q'];
+    function preloader ($animate, $timeout, $q) {
+
+        var directive = {
+            restrict: 'EAC',
+            template: 
+              '<div class="preloader-progress">' +
+                  '<div class="preloader-progress-bar" ' +
+                       'ng-style="{width: loadCounter + \'%\'}"></div>' +
+              '</div>'
+            ,
+            link: link
+        };
+        return directive;
+
+        ///////
+
+        function link(scope, el) {
+
+          scope.loadCounter = 0;
+
+          var counter  = 0,
+              timeout;
+
+          // disables scrollbar
+          angular.element('body').css('overflow', 'hidden');
+          // ensure class is present for styling
+          el.addClass('preloader');
+
+          appReady().then(endCounter);
+
+          timeout = $timeout(startCounter);
+
+          ///////
+
+          function startCounter() {
+
+            var remaining = 100 - counter;
+            counter = counter + (0.015 * Math.pow(1 - Math.sqrt(remaining), 2));
+
+            scope.loadCounter = parseInt(counter, 10);
+
+            timeout = $timeout(startCounter, 20);
+          }
+
+          function endCounter() {
+
+            $timeout.cancel(timeout);
+
+            scope.loadCounter = 100;
+
+            $timeout(function(){
+              // animate preloader hiding
+              $animate.addClass(el, 'preloader-hidden');
+              // retore scrollbar
+              angular.element('body').css('overflow', '');
+            }, 300);
+          }
+
+          function appReady() {
+            var deferred = $q.defer();
+            var viewsLoaded = 0;
+            // if this doesn't sync with the real app ready
+            // a custom event must be used instead
+            var off = scope.$on('$viewContentLoaded', function () {
+              viewsLoaded ++;
+              // we know there are at least two views to be loaded 
+              // before the app is ready (1-index.html 2-app*.html)
+              if ( viewsLoaded === 2) {
+                // with resolve this fires only once
+                $timeout(function(){
+                  deferred.resolve();
+                }, 3000);
+
+                off();
+              }
+
+            });
+
+            return deferred.promise;
+          }
+
+        } //link
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.products')
+        .controller('ProductsController', ProductsController);
+
+    ProductsController.$inject = ['$rootScope', '$scope', '$state', 'ProductsService', 'Utils'];
+    function ProductsController($rootScope, $scope, $state, ProductsService,  Utils) {
+        var vm = this;
+        activate();
+
+        /////////////////
+
+        function activate() {
+
+            vm.currentPage = 1;
+            vm.maxSize = 5;
+            vm.productsPerPage = 5;
+
+            vm.setPage = function (pageNo) {
+                vm.currentPage = pageNo;
+            };
+
+            vm.pageChanged = function() {
+                console.log('Page changed to: ' + vm.currentPage);
+                filterData();
+            };
+
+            function filterData(){
+                var begin = ((vm.currentPage - 1) * vm.productsPerPage),
+                    end = begin + vm.productsPerPage;
+                if(vm.allProducts==undefined){
+                    vm.products=[];
+                }else{
+                    vm.products = vm.allProducts.slice(begin, end);
+                }
+            }
+
+
+          ProductsService.getMenu(sidebarReady);
+
+          function sidebarReady(items) {
+              if(items && items.length>0){
+                  vm.allProducts = items;
+                  vm.totalProducts = items.length;
+                  filterData();
+              }else{
+                  //Display no record found message.
+              }
+
+          }
+        }
+    }
+
+})();
+
+(function() {
+    'use strict';
+
+    angular
+        .module('app.products')
+        .filter('truncate', truncate);
+
+
+    function truncate() {
+        return function (text, length, end) {
+            if (isNaN(length))
+                length = 10;
+
+            if (end === undefined)
+                end = "...";
+
+            if (text.length <= length || text.length - end.length <= length) {
+                return text;
+            }
+            else {
+                return String(text).substring(0, length-end.length) + end;
+            }
+
+        };
+    }
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.products')
+        .service('ProductsService', ProductsService);
+
+    ProductsService.$inject = ['$http'];
+    function ProductsService($http) {
+        this.getMenu = getMenu;
+
+        ////////////////
+
+        function getMenu(onReady, onError) {
+          var menuJson = 'server/products.json',
+              menuURL  = menuJson + '?v=' + (new Date().getTime()); // jumps cache
+            
+          onError = onError || function() { alert('Failure loading products'); };
+
+          $http
+            .get(menuURL)
+            .success(onReady)
+            .error(onError);
+        }
+    }
+})();
 /**=========================================================
  * Module: helpers.js
  * Provides helper functions for routes definition
@@ -590,6 +799,13 @@
               templateUrl: helper.basepath('app.html'),
               resolve: helper.resolveFor('modernizr', 'icons')
           })
+            .state('app.products', {
+                url: '/products',
+                title: 'Product List',
+                controller: 'ProductsController',
+                controllerAs: 'ProductsCtrl',
+                templateUrl: helper.basepath('products.html')
+            })
           .state('app.singleview', {
               url: '/singleview',
               title: 'Single View',
@@ -623,99 +839,6 @@
 })();
 
 
-(function() {
-    'use strict';
-
-    angular
-        .module('app.preloader')
-        .directive('preloader', preloader);
-
-    preloader.$inject = ['$animate', '$timeout', '$q'];
-    function preloader ($animate, $timeout, $q) {
-
-        var directive = {
-            restrict: 'EAC',
-            template: 
-              '<div class="preloader-progress">' +
-                  '<div class="preloader-progress-bar" ' +
-                       'ng-style="{width: loadCounter + \'%\'}"></div>' +
-              '</div>'
-            ,
-            link: link
-        };
-        return directive;
-
-        ///////
-
-        function link(scope, el) {
-
-          scope.loadCounter = 0;
-
-          var counter  = 0,
-              timeout;
-
-          // disables scrollbar
-          angular.element('body').css('overflow', 'hidden');
-          // ensure class is present for styling
-          el.addClass('preloader');
-
-          appReady().then(endCounter);
-
-          timeout = $timeout(startCounter);
-
-          ///////
-
-          function startCounter() {
-
-            var remaining = 100 - counter;
-            counter = counter + (0.015 * Math.pow(1 - Math.sqrt(remaining), 2));
-
-            scope.loadCounter = parseInt(counter, 10);
-
-            timeout = $timeout(startCounter, 20);
-          }
-
-          function endCounter() {
-
-            $timeout.cancel(timeout);
-
-            scope.loadCounter = 100;
-
-            $timeout(function(){
-              // animate preloader hiding
-              $animate.addClass(el, 'preloader-hidden');
-              // retore scrollbar
-              angular.element('body').css('overflow', '');
-            }, 300);
-          }
-
-          function appReady() {
-            var deferred = $q.defer();
-            var viewsLoaded = 0;
-            // if this doesn't sync with the real app ready
-            // a custom event must be used instead
-            var off = scope.$on('$viewContentLoaded', function () {
-              viewsLoaded ++;
-              // we know there are at least two views to be loaded 
-              // before the app is ready (1-index.html 2-app*.html)
-              if ( viewsLoaded === 2) {
-                // with resolve this fires only once
-                $timeout(function(){
-                  deferred.resolve();
-                }, 3000);
-
-                off();
-              }
-
-            });
-
-            return deferred.promise;
-          }
-
-        } //link
-    }
-
-})();
 (function() {
     'use strict';
 
